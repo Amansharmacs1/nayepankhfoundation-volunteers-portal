@@ -51,14 +51,19 @@ if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
 
-// Serve Frontend in Production
+// Serve Frontend in Production (if Monolithic)
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();
-  app.use(express.static(path.join(__dirname, '../client/dist')));
-
-  app.get('*', (req, res) =>
-    res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'))
-  );
+  const frontendPath = path.join(__dirname, '../client/dist');
+  
+  if (fs.existsSync(frontendPath)) {
+    app.use(express.static(frontendPath));
+    app.get('*', (req, res) => res.sendFile(path.join(frontendPath, 'index.html')));
+  } else {
+    app.get('/', (req, res) => {
+      res.send('NVMS Backend API is running successfully....');
+    });
+  }
 } else {
   app.get('/', (req, res) => {
     res.send('NVMS API is running....');
