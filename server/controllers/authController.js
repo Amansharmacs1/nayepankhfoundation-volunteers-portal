@@ -7,8 +7,9 @@ import generateToken from '../utils/generateToken.js';
 const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = email.trim().toLowerCase();
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (user && (await user.matchPassword(password))) {
       generateToken(res, user._id);
@@ -35,8 +36,9 @@ const loginUser = async (req, res, next) => {
 const registerUser = async (req, res, next) => {
   try {
     const { name, email, password, phone, college, course, year, city, skills, interests, availability } = req.body;
+    const normalizedEmail = email.trim().toLowerCase();
 
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email: normalizedEmail });
 
     if (userExists) {
       res.status(400);
@@ -45,7 +47,7 @@ const registerUser = async (req, res, next) => {
 
     const user = await User.create({
       name,
-      email,
+      email: normalizedEmail,
       password,
       phone,
       college,

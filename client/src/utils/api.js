@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://nayepankhfoundation-volunteers-portal-1.onrender.com/api',
   withCredentials: true, // Send cookies when cross-domain requests
 });
 
