@@ -23,7 +23,9 @@ const app = express();
 // Middlewares
 app.set('trust proxy', 1); // Crucial for rate limiting behind Render's load balancer
 
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
 const allowedOrigins = [
