@@ -28,21 +28,12 @@ app.use(helmet({
 }));
 
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-const allowedOrigins = [
-  clientUrl,
-  clientUrl.replace(/\/$/, ''), // Without trailing slash
-  clientUrl + '/', // With trailing slash
-  'http://localhost:5173'
-];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(null, allowedOrigins[0]); // Fallback safely
-      }
+      // Always allow the requesting origin dynamically to prevent CORS preflight blocks
+      callback(null, true);
     },
     credentials: true,
   })
