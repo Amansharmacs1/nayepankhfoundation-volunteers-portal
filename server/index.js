@@ -21,10 +21,27 @@ connectDB();
 const app = express();
 
 // Middlewares
+app.set('trust proxy', 1); // Crucial for rate limiting behind Render's load balancer
+
 app.use(helmet());
+
+const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+const allowedOrigins = [
+  clientUrl,
+  clientUrl.replace(/\/$/, ''), // Without trailing slash
+  clientUrl + '/', // With trailing slash
+  'http://localhost:5173'
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, allowedOrigins[0]); // Fallback safely
+      }
+    },
     credentials: true,
   })
 );
